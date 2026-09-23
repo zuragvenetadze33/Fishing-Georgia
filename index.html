@@ -2,130 +2,98 @@
 <html lang="ka">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fishing Georgia 🎣</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Fishing Georgia 3D</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#0b2530;color:#fff;min-height:100vh}
-.game{max-width:900px;margin:auto;min-height:100vh;background:linear-gradient(#79c9e8 0 25%,#4b9fc0 25% 34%,#12627e 34% 100%);position:relative;overflow:hidden}
-.top{padding:18px;text-align:center;background:rgba(0,0,0,.25)}
-.top h1{margin:0;font-size:30px}.top p{margin:5px 0 0}
-.stats{display:flex;gap:8px;padding:10px;justify-content:center;flex-wrap:wrap}
-.stat{background:rgba(0,0,0,.35);padding:8px 13px;border-radius:12px}
-.scene{height:430px;position:relative}
-.mountain{position:absolute;bottom:66%;left:-10%;width:120%;height:180px;background:#376d5b;clip-path:polygon(0 100%,18% 45%,28% 72%,45% 15%,58% 70%,73% 32%,88% 72%,100% 48%,100% 100%)}
-.bank{position:absolute;bottom:0;width:100%;height:32%;background:#756044;clip-path:polygon(0 35%,20% 20%,45% 40%,70% 25%,100% 45%,100% 100%,0 100%)}
-.water{position:absolute;left:0;right:0;bottom:0;height:67%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.09) 0 2px,transparent 2px 35px)}
-.rod{position:absolute;right:13%;bottom:23%;width:210px;height:8px;background:#55351d;transform:rotate(-30deg);border-radius:8px}
-.line{position:absolute;right:10%;bottom:23%;width:180px;height:150px;border-right:2px solid #eee;transform:skewY(-12deg)}
-.float{position:absolute;right:9.3%;bottom:17%;font-size:25px;display:none}
-.panel{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);width:90%;max-width:520px;background:rgba(0,0,0,.55);padding:15px;border-radius:18px;text-align:center}
-button{border:0;border-radius:14px;padding:13px 22px;font-size:17px;font-weight:bold;background:#f4c542;color:#1b2a30;margin:5px;cursor:pointer}
-button:active{transform:scale(.97)}
-#message{min-height:28px;margin:8px;font-weight:bold}
-.inventory{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;font-size:14px}
-@media(max-width:600px){.scene{height:400px}.rod{right:7%;width:175px}.line{right:4%}.float{right:3%}}
-</style>
-</head>
-<body>
-<div class="game">
-  <div class="top">
-    <h1>🎣 Fishing Georgia</h1>
-    <p>მტკვარი — პირველი სათევზაო ადგილი</p>
-  </div>
-
-  <div class="stats">
-    <div class="stat">💰 <span id="money">100</span> ₾</div>
-    <div class="stat">⭐ დონე <span id="level">1</span></div>
-    <div class="stat">🐟 დაჭერილი: <span id="fish">0</span></div>
-  </div>
-
-  <div class="scene">
-    <div class="mountain"></div>
-    <div class="water"></div>
-    <div class="bank"></div>
-    <div class="rod"></div>
-    <div class="line"></div>
-    <div class="float" id="float">🔴</div>
-
-    <div class="panel">
-      <div id="message">მზად ხარ? გადააგდე სატყუარა მტკვარში!</div>
-      <button id="cast">🎣 გადააგდე</button>
-      <button id="sell" style="display:none">💰 გაყიდე ნადავლი</button>
-      <div class="inventory">
-        <span>🪱 სატყუარა: <b id="bait">5</b></span>
-        <span>🎣 ანკესი: 3მ</span>
-        <span>🧵 ძუა: 0.30მმ</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-let money=100, level=1, fish=0, bait=5, caughtValue=0, busy=false;
-
-const fishList=[
-  {name:"ხრამული", min:0.3,max:1.8,value:25},
-  {name:"წვერა", min:0.2,max:2.5,value:30},
-  {name:"ცვერა", min:0.15,max:1.2,value:20},
-  {name:"მურწა", min:0.1,max:0.8,value:18},
-  {name:"კობრი", min:0.7,max:3.5,value:45}
-];
-
-const $=id=>document.getElementById(id);
-
-function update(){
-  $("money").textContent=money;
-  $("level").textContent=level;
-  $("fish").textContent=fish;
-  $("bait").textContent=bait;
+html,body{
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#07141d;
+font-family:Arial,sans-serif
 }
 
-$("cast").onclick=()=>{
-  if(busy) return;
-  if(bait<=0){$("message").textContent="🪱 სატყუარა აღარ გაქვს!";return;}
-  busy=true;bait--;update();
-  $("message").textContent="🌊 სატყუარა წყალშია... დაელოდე კბენას!";
-  $("float").style.display="block";
-  $("cast").disabled=true;
-
-  setTimeout(()=>{
-    if(Math.random()<0.72){
-      const f=fishList[Math.floor(Math.random()*fishList.length)];
-      const weight=(f.min+Math.random()*(f.max-f.min)).toFixed(2);
-      caughtValue=Math.max(10,Math.round(f.value*weight));
-      fish++;
-      $("message").textContent=`🐟 კბენა! ${f.name} — ${weight} კგ. ამოიყვანე!`;
-      $("cast").textContent="💪 ამოიყვანე!";
-      $("cast").disabled=false;
-      $("cast").onclick=()=>landFish(f.name,weight,caughtValue);
-    }else{
-      $("message").textContent="😅 კბენა არ იყო... ისევ სცადე!";
-      resetCast();
-    }
-  },2000+Math.random()*2500);
-};
-
-function landFish(name,weight,value){
-  money+=value;
-  level=1+Math.floor(fish/5);
-  $("message").textContent=`🎉 ${name} (${weight} კგ) ამოიყვანე! +${value}₾`;
-  $("float").style.display="none";
-  $("cast").textContent="🎣 გადააგდე";
-  $("cast").onclick=originalCast;
-  $("cast").disabled=false;
-  busy=false;update();
+#game{
+position:relative;
+width:100%;
+height:100%;
+touch-action:none
 }
 
-function originalCast(){ location.reload(); }
-function resetCast(){
-  $("float").style.display="none";
-  $("cast").disabled=false;
-  $("cast").textContent="🎣 გადააგდე";
-  $("cast").onclick=originalCast;
-  busy=false;update();
+canvas{
+display:block
 }
-update();
-</script>
-</body>
-</html>
+
+#hud{
+position:absolute;
+top:14px;
+left:14px;
+right:14px;
+display:flex;
+justify-content:space-between;
+gap:10px;
+pointer-events:none
+}
+
+.panel{
+background:rgba(4,17,26,.72);
+backdrop-filter:blur(8px);
+border:1px solid rgba(255,255,255,.18);
+border-radius:15px;
+padding:10px 14px;
+color:white;
+box-shadow:0 8px 25px rgba(0,0,0,.3)
+}
+
+.title{
+font-size:18px;
+font-weight:800
+}
+
+.sub{
+font-size:12px;
+color:#b9d8e1;
+margin-top:3px
+}
+
+#stats{
+font-size:12px;
+line-height:1.5;
+text-align:right
+}
+
+#status{
+position:absolute;
+top:92px;
+left:50%;
+transform:translateX(-50%);
+text-align:center;
+max-width:85%;
+font-weight:bold
+}
+
+#actions{
+position:absolute;
+left:14px;
+right:14px;
+bottom:15px;
+display:flex;
+gap:9px
+}
+
+button{
+flex:1;
+min-height:50px;
+border:0;
+border-radius:15px;
+background:#08779b;
+color:white;
+font-size:14px;
+font-weight:bold;
+box-shadow:0 7px 18px rgba(0,0,0,.3)
+}
+
+button:active{
+transform:scale
